@@ -1,0 +1,18 @@
+# Generated files
+target/
+
+# Rust toolchain
+Cargo.lock
+
+# Rust language specifics
+**/*.rs.bk
+**/*.rlib
+**/*.rmeta
+**/*.rmeta.bk
+
+# Build output
+debug/
+release/
+
+#env
+.env

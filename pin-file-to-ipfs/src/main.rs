@@ -1,11 +1,15 @@
 use std::env;
+use dotenv::dotenv;
 use std::path::Path;
-use pinata_sdk::{PinataApi, PinByFile};
+use pinata_sdk::{ PinataApi, PinByFile };
 use colored::Colorize;
 use std::collections::HashMap;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load the environment variables from the .env file
+    dotenv().ok();
+
     // Read the API key and secret from environment variables
     let api_key = env::var("PINATA_API_KEY")?;
     let api_secret = env::var("PINATA_API_SECRET")?;
@@ -27,27 +31,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap_or("Unknown")
         .to_string(); // Convert &&str to String
 
-    println!("{}", file_name.clone());
-
+    // Provide a custom file name for the pin
     let mut metadata = HashMap::new();
     metadata.insert("name".to_string(), file_name.clone());
 
+    // Pin the file to IPFS
     let api = PinataApi::new(&api_key, &api_secret)?;
-    let result = api
-        .pin_file(
-            PinByFile::new(file_path)
-                .set_metadata_with_name(file_name.clone(), metadata),
-        )
-        .await;
+    let result = api.pin_file(
+        PinByFile::new(file_path).set_metadata_with_name(file_name.clone(), metadata)
+    ).await;
 
+    // Print the results
     if let Ok(pinned_object) = result {
         let hash = pinned_object.ipfs_hash;
         let link = format!("https://ipfs.io/ipfs/{}", hash);
 
         println!();
         println!("{}", "-".repeat(80).green());
-        println!("{} {}", "IPFS link:".green(), link);
-        println!("{} {}", "File name:".green(), file_name);
+        println!("{} {} {}", file_name.green(), " => ", link);
         println!("{}", "-".repeat(80).green());
         println!();
     } else if let Err(error) = result {
