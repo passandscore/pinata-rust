@@ -44,7 +44,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Print the results
     if let Ok(pinned_object) = result {
         let hash = pinned_object.ipfs_hash;
-        let link = format!("https://ipfs.io/ipfs/{}", hash);
+        let link = format!("https://gateway.pinata.cloud/ipfs/{}", hash);
 
         println!();
         println!("{}", "-".repeat(80).green());
