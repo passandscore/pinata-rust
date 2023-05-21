@@ -1,12 +1,15 @@
 [package]
-name = "pin-file-to-ipfs"
+name = "pinata-rust"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-pinata-sdk = "0.1.0" 
+pinata-sdk = "0.1.0"
 tokio = { version = "0.2.0", features = ["full"] }
 colored = "2.0.0"
 dotenv = "0.15.0"
+
+
+
