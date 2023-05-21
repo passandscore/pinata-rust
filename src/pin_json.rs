@@ -43,11 +43,10 @@ pub async fn main_with_args(json: &str) -> Result<(), Box<dyn std::error::Error>
         let link = format!("https://gateway.pinata.cloud/ipfs/{}", hash);
 
         println!();
-        println!("{}", "-".repeat(80).green());
         println!("{} {} {}", pinata_file_name.green(), " => ", link);
-        println!("{}", "-".repeat(80).green());
         println!();
     } else if let Err(error) = result {
+        println!();
         eprintln!("{} {:?}", "Pinata API error:".red(), error);
     }
 

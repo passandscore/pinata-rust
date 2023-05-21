@@ -22,12 +22,13 @@ pub async fn main_with_args(hash: &str) -> Result<(), Box<dyn std::error::Error>
     match unpin_result {
         Ok(_) => {
             println!();
-            println!("{}", "-".repeat(80).green());
-            println!("Content with hash {} successfully unpinned.", hash);
-            println!("{}", "-".repeat(80).green());
+            println!("{}", "Successfully unpinned.".green());
             println!();
         }
-        Err(error) => eprintln!("Failed to unpin content with hash {}: {:?}", hash, error),
+        Err(error) => {
+            println!();
+            eprintln!("Failed to unpin content: {:?}", error);
+        }
     }
 
     Ok(())
