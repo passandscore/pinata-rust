@@ -10,6 +10,6 @@ pinata-sdk = "0.1.0"
 tokio = { version = "0.2.0", features = ["full"] }
 colored = "2.0.0"
 dotenv = "0.15.0"
-
+serde_json = "1.0"
 
 

@@ -2,12 +2,14 @@ use std::io::{ self, Write };
 
 mod pin_file;
 mod pin_by_hash;
+mod pin_json;
 
 fn main() {
     loop {
         println!("Select a crate to run:");
         println!("1. Pin File");
         println!("2. Pin By Hash");
+        println!("3. Pin JSON");
         println!("0. Exit");
 
         print!("Enter your choice: ");
@@ -38,6 +40,16 @@ fn main() {
 
                 if let Err(error) = pin_by_hash::main_with_args(hash) {
                     eprintln!("Error running Pin By Hash: {:?}", error);
+                }
+            }
+            "3" => {
+                println!("Enter a JSON value:");
+                let mut json = String::new();
+                io::stdin().read_line(&mut json).unwrap();
+                let json = json.trim();
+
+                if let Err(error) = pin_json::main_with_args(json) {
+                    eprintln!("Error running Pin JSON: {:?}", error);
                 }
             }
             "0" => {
