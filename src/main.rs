@@ -3,6 +3,7 @@ use std::io::{ self, Write };
 mod pin_file;
 mod pin_by_hash;
 mod pin_json;
+mod unpin_by_hash;
 
 fn main() {
     loop {
@@ -10,6 +11,7 @@ fn main() {
         println!("1. Pin File");
         println!("2. Pin By Hash");
         println!("3. Pin JSON");
+        println!("4. Unpin By Hash");
         println!("0. Exit");
 
         print!("Enter your choice: ");
@@ -50,6 +52,16 @@ fn main() {
 
                 if let Err(error) = pin_json::main_with_args(json) {
                     eprintln!("Error running Pin JSON: {:?}", error);
+                }
+            }
+            "4" => {
+                println!("Enter the hash:");
+                let mut hash = String::new();
+                io::stdin().read_line(&mut hash).unwrap();
+                let hash = hash.trim();
+
+                if let Err(error) = unpin_by_hash::main_with_args(hash) {
+                    eprintln!("Error running Unpin: {:?}", error);
                 }
             }
             "0" => {
