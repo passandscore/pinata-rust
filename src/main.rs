@@ -103,30 +103,40 @@ fn main() {
             "4" => {
                 println!();
                 println!("Unpin By Hash:");
-                println!("{}", "Enter the hash or (b to go back):".bright_magenta());
-                let mut hash = String::new();
-                io::stdin().read_line(&mut hash).unwrap();
-                let hash = hash.trim();
+                println!(
+                    "{}",
+                    "Enter the hash(s) separated by spaces or (b to go back):".bright_magenta()
+                );
+                let mut hashes = String::new();
+                io::stdin().read_line(&mut hashes).unwrap();
+                let hashes = hashes.trim();
 
-                if hash != "b" {
-                    // validate hash
-                    if hash.len() != 46 {
-                        println!();
-                        println!("{}", "Invalid hash. Please try again.".bright_red());
-                        if !continue_or_exit() {
-                            break;
+                if hashes != "b" {
+                    // split the hashes
+                    let hashes: Vec<&str> = hashes.split_whitespace().collect();
+
+                    for hash in hashes {
+                        print!("Unpinning {}... ", hash);
+                        // validate hash
+                        if hash.len() != 46 {
+                            println!();
+                            println!("{}", "Invalid hash. Please try again.".bright_red());
+                            if !continue_or_exit() {
+                                break;
+                            }
                         }
-                    }
 
-                    if let Err(error) = unpin_by_hash::main_with_args(hash) {
-                        println!();
-                        eprintln!("{}: {:?}", "Error running Unpin".red(), error);
+                        if let Err(error) = unpin_by_hash::main_with_args(hash) {
+                            println!();
+                            eprintln!("{}: {:?}", "Error running Unpin".red(), error);
+                        }
                     }
                     if !continue_or_exit() {
                         break;
                     }
                 }
             }
+
             "0" => {
                 println!("{}", "You chose to exit. Goodbye!".bright_green());
                 break;
