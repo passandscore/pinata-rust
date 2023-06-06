@@ -39,7 +39,7 @@ export PINATA_API_SECRET=<your-pinata-secret-api-key>
 
 ## Usage
 
-<img width="300" alt="main-menu" src="./imgs/main-menu.png">
+<img width="600" alt="main-menu" src="./imgs/main-menu.png">
 
 ### Pin File
 
