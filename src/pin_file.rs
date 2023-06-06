@@ -6,7 +6,7 @@ use colored::Colorize;
 use std::collections::HashMap;
 
 #[tokio::main]
-pub async fn main_with_args(args: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn main_with_args(file: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     // Load the environment variables from the .env file
     dotenv().ok();
 
@@ -15,7 +15,7 @@ pub async fn main_with_args(args: Vec<String>) -> Result<(), Box<dyn std::error:
     let api_secret = env::var("PINATA_API_SECRET")?;
 
     // Read the file path from command-line arguments
-    let file_path: &str = match args.get(0) {
+    let file_path: &str = match file {
         Some(path) => path,
         None => {
             eprintln!("{} Please provide a file path as an argument.", "Error:".red());

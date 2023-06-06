@@ -19,13 +19,11 @@ fn main() {
         println!("{:^45}", "   PINATA RUST   ");
         println!("{:^45}", "-----------------");
         println!();
-        // println!("{:^45}", "Select an option:");
-        // println!("{:^45}", "-----------------");
-        // println!();
-        println!("{:^40}", "1. Pin File");
+
+        println!("{:^40}", "1. Pin File(s)");
         println!("{:^43}", "2. Pin By Hash");
         println!("{:^40}", "3. Pin JSON");
-        println!("{:^45}", "4. Unpin By Hash");
+        println!("{:^45}", "4. Unpin By Hash(es)");
         println!();
         println!("{:^43}", "0. >>> Exit >>>".red());
         println!();
@@ -49,12 +47,17 @@ fn main() {
                 let file_path = file_path.trim();
 
                 if file_path != "b" {
-                    let mut args = Vec::new();
-                    args.push(file_path.to_owned());
+                    // split the file_path
+                    let file_path: Vec<&str> = file_path.split_whitespace().collect();
 
-                    if let Err(error) = pin_file::main_with_args(args) {
+                    for file in file_path {
                         println!();
-                        eprintln!("Error running Pin File: {:?}", error);
+                        print!("Pinning {}... ", file);
+
+                        if let Err(error) = pin_file::main_with_args(Some(file)) {
+                            println!();
+                            eprintln!("Error running Unpin: {:?}", error);
+                        }
                     }
                     if !continue_or_exit() {
                         break;
