@@ -1,5 +1,6 @@
 use std::io::{ self, Write };
-use colored::*;
+use std::fs;
+use colored::Colorize;
 
 mod pin_file;
 mod pin_by_hash;
@@ -7,26 +8,31 @@ mod pin_json;
 mod unpin_by_hash;
 
 fn main() {
+    let menu_image = fs
+        ::read_to_string("ascii_image.txt")
+        .expect("Failed to read ASCII image file");
+
     loop {
         println!();
-        println!("{}", "-----------------".bright_yellow());
-        println!("{}", "Pinata SDK - Rust".bright_yellow());
-        println!("{}", "-----------------".bright_yellow());
+        println!("{:^45}", menu_image);
+        println!("{:^45}", "-----------------");
+        println!("{:^45}", "   PINATA RUST   ");
+        println!("{:^45}", "-----------------");
         println!();
-        println!("{}", "Select an option:".bright_cyan());
-        println!("{}", "-----------------".bright_cyan());
+        // println!("{:^45}", "Select an option:");
+        // println!("{:^45}", "-----------------");
+        // println!();
+        println!("{:^40}", "1. Pin File");
+        println!("{:^43}", "2. Pin By Hash");
+        println!("{:^40}", "3. Pin JSON");
+        println!("{:^45}", "4. Unpin By Hash");
         println!();
-        println!("1. Pin File");
-        println!("2. Pin By Hash");
-        println!("3. Pin JSON");
-        println!("4. Unpin By Hash");
-        println!();
-        println!("{}", "-----------------".bright_yellow());
-        println!("0. Exit");
-        println!("{}", "-----------------".bright_yellow());
+        println!("{:^43}", "0. >>> Exit >>>".red());
         println!();
 
-        print!("Enter your choice: ");
+        print!("Select a feature: ");
+        println!();
+
         io::stdout().flush().unwrap();
 
         let mut input = String::new();
@@ -35,8 +41,8 @@ fn main() {
         match input.trim() {
             "1" => {
                 println!();
-                println!("Pin File:");
-                println!("{}", "Enter the file path or (b to go back):".bright_magenta());
+                println!("{:^10}", "Pin File:".blue());
+                println!("{:^20}", "Enter the file path or (b to go back):");
 
                 let mut file_path = String::new();
                 io::stdin().read_line(&mut file_path).unwrap();
@@ -48,7 +54,7 @@ fn main() {
 
                     if let Err(error) = pin_file::main_with_args(args) {
                         println!();
-                        eprintln!("{}: {:?}", "Error running Pin File".red(), error);
+                        eprintln!("Error running Pin File: {:?}", error);
                     }
                     if !continue_or_exit() {
                         break;
@@ -57,8 +63,8 @@ fn main() {
             }
             "2" => {
                 println!();
-                println!("Pin By Hash:");
-                println!("{}", "Enter the hash or (b to go back):".bright_magenta());
+                println!("{:^10}", "Pin By Hash:".blue());
+                println!("{:^20}", "Enter the hash or (b to go back):");
                 let mut hash = String::new();
                 io::stdin().read_line(&mut hash).unwrap();
                 let hash = hash.trim();
@@ -67,7 +73,7 @@ fn main() {
                     // validate hash
                     if hash.len() != 46 {
                         println!();
-                        println!("{}", "Invalid hash. Please try again.".bright_red());
+                        println!("{:^20}", "Invalid hash. Please try again.");
                         if !continue_or_exit() {
                             break;
                         }
@@ -75,7 +81,7 @@ fn main() {
 
                     if let Err(error) = pin_by_hash::main_with_args(hash) {
                         println!();
-                        eprintln!("{}: {:?}", "Error running Pin By Hash".red(), error);
+                        eprintln!("Error running Pin By Hash: {:?}", error);
                     }
                     if !continue_or_exit() {
                         break;
@@ -84,8 +90,8 @@ fn main() {
             }
             "3" => {
                 println!();
-                println!("Pin JSON:");
-                println!("{}", "Enter a JSON value or (b to go back):".bright_magenta());
+                println!("{:^10}", "Pin JSON:".blue());
+                println!("{:^20}", "Enter a JSON value or (b to go back):");
                 let mut json = String::new();
                 io::stdin().read_line(&mut json).unwrap();
                 let json = json.trim();
@@ -93,7 +99,7 @@ fn main() {
                 if json != "b" {
                     if let Err(error) = pin_json::main_with_args(json) {
                         println!();
-                        eprintln!("{}: {:?}", "Error running Pin JSON".red(), error);
+                        eprintln!("Error running Pin JSON: {:?}", error);
                     }
                     if !continue_or_exit() {
                         break;
@@ -102,11 +108,8 @@ fn main() {
             }
             "4" => {
                 println!();
-                println!("Unpin By Hash:");
-                println!(
-                    "{}",
-                    "Enter the hash(s) separated by spaces or (b to go back):".bright_magenta()
-                );
+                println!("{:^10}", "Unpin By Hash:".blue());
+                println!("{:^20}", "Enter the hash(s) separated by spaces or (b to go back):");
                 let mut hashes = String::new();
                 io::stdin().read_line(&mut hashes).unwrap();
                 let hashes = hashes.trim();
@@ -116,11 +119,12 @@ fn main() {
                     let hashes: Vec<&str> = hashes.split_whitespace().collect();
 
                     for hash in hashes {
+                        println!();
                         print!("Unpinning {}... ", hash);
                         // validate hash
                         if hash.len() != 46 {
                             println!();
-                            println!("{}", "Invalid hash. Please try again.".bright_red());
+                            println!("{:^20}", "Invalid hash. Please try again.");
                             if !continue_or_exit() {
                                 break;
                             }
@@ -128,7 +132,7 @@ fn main() {
 
                         if let Err(error) = unpin_by_hash::main_with_args(hash) {
                             println!();
-                            eprintln!("{}: {:?}", "Error running Unpin".red(), error);
+                            eprintln!("Error running Unpin: {:?}", error);
                         }
                     }
                     if !continue_or_exit() {
@@ -138,12 +142,15 @@ fn main() {
             }
 
             "0" => {
-                println!("{}", "You chose to exit. Goodbye!".bright_green());
+                print_thank_you_message();
                 break;
             }
             _ => {
                 println!();
-                println!("{}", "Invalid choice. Please try again.".bright_red());
+                println!("{:^20}", "Invalid choice. Enter 0, 1, 2, 3 or 4".red());
+                if !continue_or_exit() {
+                    break;
+                }
             }
         }
     }
@@ -152,7 +159,7 @@ fn main() {
 fn continue_or_exit() -> bool {
     loop {
         println!();
-        println!("Press M to menu or E to exit: ");
+        println!("{:^20}", "Press M to menu or E to exit: ");
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
         let choice = input.trim().to_lowercase();
@@ -161,9 +168,18 @@ fn continue_or_exit() -> bool {
                 return true;
             }
             "e" => {
+                print_thank_you_message();
                 return false;
             }
-            _ => println!("Invalid choice. Please try again."),
+            _ => {
+                println!();
+                println!("{:^20}", "Invalid choice. Please try again.".red());
+                continue;
+            }
         }
     }
+}
+
+fn print_thank_you_message() {
+    println!("{}", "Thank you for using Pinata-Rust!".blue());
 }
